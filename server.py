@@ -15,18 +15,20 @@ print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
 channel = connection.channel()
 channel.exchange_declare(exchange='worker_exchange', exchange_type='direct')
+
+
 #initializing flask application
 app = Flask(__name__)
 
 @app.route('/track', methods=['POST'])
 def track():
 	r=request
-	print(r.data)
+	val=jsonpickle.decode(r.data)
 	## in this part parse request and send it to a worker node
 	try:
-		print(r.data['number'])
+		print(val['number'])
 		response={'state':"sending to worker node"}
-		responsetoRab={'tracking_num': r.data['number']}
+		responsetoRab={'tracking_num': val['number']}
 	except:
 		response={'state':"error sending to worker node"}
 		responsetoRab= {'tracking_num':"none"}
