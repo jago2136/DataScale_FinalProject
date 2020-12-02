@@ -77,6 +77,7 @@ def serv_match(trackingNumber):
 					 'trackingDate' : 'Error',
 					 'trackingEvent' : 'Error'
 					}
+	print("Response is\n", response)
 	return jsonpickle.encode(response)
 
 
@@ -87,7 +88,6 @@ def callback(ch, method, properties, body):
 	tracking_str=serverMessage['tracking_num']
 	if (tracking_str!="none"):
 		response=serv_match(tracking_str)
-
 		trackingNumtoInfo.set(tracking_str,response)
 
 	print("[x] Done")
