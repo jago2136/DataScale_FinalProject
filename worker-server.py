@@ -77,7 +77,7 @@ def serv_match(trackingNumber):
 					 'trackingDate' : 'Error',
 					 'trackingEvent' : 'Error'
 					}
-	return response
+	return jsonpickle.encode(response)
 
 
 #when worker receive data from the server
@@ -87,7 +87,8 @@ def callback(ch, method, properties, body):
 	tracking_str=serverMessage['tracking_num']
 	if (tracking_str!="none"):
 		response=serv_match(tracking_str)
-		trackingNumtoInfo.set(trackingNumber,response)
+
+		trackingNumtoInfo.set(tracking_str,response)
 
 	print("[x] Done")
 	ch.basic_ack(delivery_tag=method.delivery_tag)
