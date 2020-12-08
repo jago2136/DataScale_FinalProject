@@ -63,15 +63,14 @@ def serv_match(trackingNumber):
 	# Parse received request
 	try:
 		getTrackingInfo(newOrder, trackingNumber)
-		response = { 'trackingTime' : newOrder.trackingTime,
+
+		response = { 'trackingNumber':trackingNumber,
+					 'trackingTime' : newOrder.trackingTime,
 					 'trackingDate' : newOrder.trackingDate,
 					 'trackingEvent' : newOrder.trackingEvent
 					}
 	except:
-		response = { 'trackingTime' : 'Error',
-					 'trackingDate' : 'Error',
-					 'trackingEvent' : 'Error'
-					}
+		response = { 'trackingNumber': trackingNumber, 'trackingTime' : 'Error', 'trackingDate' : 'Error', 'trackingEvent' : 'Error'}
 	print("Response is\n", response)
 	return jsonpickle.encode(response)
 
@@ -89,7 +88,7 @@ def callback(ch, method, properties, body):
 	ch.basic_ack(delivery_tag=method.delivery_tag)
 
 #pub-sub consumption by workers
-channel.basic_consume(queue=queue_n, on_message_callback=callback, auto_ack=False)
+channel.basic_consume(queue='worker_queue', on_message_callback=callback, auto_ack=False)
 
 channel.start_consuming()
 

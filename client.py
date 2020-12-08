@@ -13,7 +13,7 @@ def putTrackInfo(host_addr, tracknum):
 	print("Response is", response)
 	print(json.loads(response.text))
 
-def getHompage(host_addr):
+def getHomepage(host_addr):
 	headers= {'content-type':'application/json'}
 	url=host_addr+'/getInfoHomepage'
 	response=requests.get(url, headers=headers)
