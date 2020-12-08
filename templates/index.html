@@ -1,0 +1,150 @@
+<!--  
+Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-using-javascript.htm
+-->
+
+<html>
+  <head>
+    <title>Platinum Wireless Tracking Dashboard</title>
+  </head>
+  <body>
+
+    <p> Need to add javascript here to integrate app functionality! </p>
+
+    <body>
+		<h3>
+	    	USPS limits the number of calls that can be made using a specific tracking number. After a number has 
+	    	been called 35 times, the API will no longer return tracking info. Please populate using the database
+	    	unless you need the latest tracking updates.
+	    </h3>
+	    <input type='button' onclick='tableFromJson()' 
+	    	value='Populate Table From Database' />
+	        
+	   
+	</body>
+
+<!-- This is how an individual object would be called and return
+	<script type="text/javascript">
+    	var apiUrl = 'OwensUrlHere';
+    	fetch(apiUrl).then(response => {
+      		return response.json();
+    	}).then(data => {
+      		// Work with JSON data here
+      		document.getElementById('number').innerHTML = data.trackingNumber;
+      		document.getElementById('time').innerHTML = data.trackingTime;
+      		document.getElementById('date').innerHTML = data.trackingDate;
+      		document.getElementById('event').innerHTML = data.trackingEvent;
+      		console.log(data);
+    	}).catch(err => {
+      		// Do something for an error here
+      		document.getElementById('number').innerHTML = "Error";
+      		document.getElementById('time').innerHTML = "Error";
+      		document.getElementById('date').innerHTML = "Error";
+      		document.getElementById('event').innerHTML = "Error";
+      		console.log("Error with API call, returning 'Error' for all fields");
+    	});
+	</script>
+-->
+	
+
+	    <table cellpadding="0" cellspacing="0" style="width:80%" id="trackingTable">
+        <colgroup>
+            <col class="FirstColumn">
+        </colgroup>
+        <thead>
+            <tr>
+                <th colspan="2">Order Details</th>
+                <th style="text-align:center" colspan="3">Most Recent Tracking Updates</th>
+            </tr>
+        </thead>
+        <tbody class="secondHeader">
+            <tr>
+                <th>Tracking Number</th>
+                <th>Time</th>
+                <th>Date</th>
+                <th>Event</th>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td style="text-align:center">123456357349256342756 (Sample)</td>
+                <td style="text-align:center">12:37:08 (Sample)</td>
+                <td style="text-align:center">12/02/2020 (Sample)</td>
+                <td style="text-align:center">Out for Delivery (Sample)</td>
+            </tr>
+        <!--   This is how the insert would be done for an individual call
+            <tr>
+                <td style="text-align:center" id="number"></td>
+                <td style="text-align:center" id="time"></td>
+                <td style="text-align:center" id="date"></td>
+                <td style="text-align:center" id="event"></td>
+            </tr>
+        -->
+        </tbody>
+    </table>
+
+<script>
+
+    function tableFromJson() {
+		
+		// Set default tracking 
+        var trackingData = [{ "Tracking Number": "Error", "Time": "Error" ,"Date": "Error", "Event": "Error"}]
+
+        // API Call
+        var apiUrl = 'http://10.128.15.212:5000/getInfoHomepage';
+    	fetch(apiUrl).then(response => {
+      		return response.json();
+    	}).then(data => {
+      		// Assign JSON response here.
+      		trackingData = data
+      		console.log(data);
+    	}).catch(err => {
+      		// Log error, default value was already set to represent this.
+      		console.log("Error with API call, returning 'Error' for all fields");
+    	});
+
+        // Extract keys from incoming data 
+        var col = [];
+        for (var i = 0; i < trackingData.length; i++) {
+            for (var key in trackingData[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // Create table and column names
+        var table = document.getElementById('trackingTable');
+        var colNames = ["Tracking Number", "Time", "Date", "Event"];
+
+        // Create table header row using the extracted headers above.
+        /*
+        var tr = table.insertRow(-1);                   
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      
+            th.innerHTML = colNames[i];
+            tr.appendChild(th);
+        }
+        */
+
+        // Add json tracking data to the table as rows.
+        table.deleteRow(-1);
+        for (var i = 0; i < trackingData.length; i++) {
+            tr = table.insertRow(-1);
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = trackingData[i][col[j]];
+                tabCell.style.textAlign = "center" 
+            }
+        }
+
+        // Now, add the newly created table with json data, to a container.
+        var divShowData = document.getElementById('showData');
+        divShowData.innerHTML = "";
+        divShowData.appendChild(table);
+
+    }
+</script>
+
+  </body>
+</html>
