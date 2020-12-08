@@ -23,12 +23,7 @@ print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 connection=pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
 channel=connection.channel()
 
-channel.exchange_declare(exchange='worker_exchange', exchange_type='direct')
-result=channel.queue_declare(queue='', durable=True)
-queue_n=result.method.queue
-channel.queue_bind(exchange='worker_exchange', queue=queue_n, routing_key='worker')
-
-
+channel.queue_declare(queue='worker_queue', durable=True)
 
 #connect to redis database
 trackingNumtoInfo = redis.Redis(host=redisHost, db=1)

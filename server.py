@@ -14,7 +14,7 @@ print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
 channel = connection.channel()
-channel.exchange_declare(exchange='worker_exchange', exchange_type='direct')
+channel.queue_declare(queue='worker_queue', durable=True)
 
 
 #initializing flask application
@@ -35,7 +35,7 @@ def track():
 	response_pickled=jsonpickle.encode(response)
 	response_rabbit_pickled=jsonpickle.encode(responsetoRab)
 
-	channel.basic_publish(exchange='worker_exchange',routing_key='worker', body=response_rabbit_pickled)
+	channel.basic_publish(exchange='',routing_key='worker_queue', body=response_rabbit_pickled)
 
 	return Response(response=response_pickled, status=200, mimetype="application/json")
 
