@@ -13,6 +13,12 @@ def putTrackInfo(host_addr, tracknum):
 	print("Response is", response)
 	print(json.loads(response.text))
 
+def getHompage(host_addr):
+	headers= {'content-type':'application/json'}
+	url=host_addr+'/getInfoHomepage'
+	response=requests.get(url, headers=headers)
+	print("Response is", response)
+	print(json.loads(response.text))
 
 host=sys.argv[1]
 addr="http://"+host+":5000"
@@ -21,5 +27,7 @@ tracking_num=sys.argv[3]
 
 if command=='track':
 	putTrackInfo(addr,tracking_num)
+elif command=='getInfo':
+	getHomepage(addr)
 else:
 	print("Command not recognized")
