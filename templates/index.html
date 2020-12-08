@@ -86,35 +86,69 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
 
     function tableFromJson() {
 		
-		// Set default tracking 
-        var trackingData = [{ "Tracking Number": "Error", "Time": "Error" ,"Date": "Error", "Event": "Error"}]
+		// Set default tracking
+
+                // Create table and column names
+        var table = document.getElementById('trackingTable');
+        var colNames = ["Tracking Number", "Time", "Date", "Event"];
+
+
+
 
         // API Call
-        var apiUrl = 'http://10.128.15.212:5000/getInfoHomepage';
+        var apiUrl = 'http://localhost:5000/getInfoHomepage';
     	fetch(apiUrl).then(response => {
       		return response.json();
     	}).then(data => {
       		// Assign JSON response here.
-      		trackingData = data
-      		console.log(data);
-    	}).catch(err => {
-      		// Log error, default value was already set to represent this.
-      		console.log("Error with API call, returning 'Error' for all fields");
-    	});
-
-        // Extract keys from incoming data 
+      		// Extract keys from incoming data 
+        var info=JSON.parse(data);
         var col = [];
-        for (var i = 0; i < trackingData.length; i++) {
-            for (var key in trackingData[i]) {
+        for (var i = 0; i < info.length; i++) {
+            for (var key in info[i]) {
                 if (col.indexOf(key) === -1) {
                     col.push(key);
                 }
             }
         }
+        // Add json tracking data to the table as rows.
+        table.deleteRow(-1);
+        for (var i = 0; i < info.length; i++) {
+            tr = table.insertRow(-1);
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = info[i][col[j]];
+                tabCell.style.textAlign = "center"; 
+            }
+        }
 
-        // Create table and column names
-        var table = document.getElementById('trackingTable');
-        var colNames = ["Tracking Number", "Time", "Date", "Event"];
+      		console.log(data);
+    	}).catch(err => {
+         var data = [{ "Tracking Number": "Error", "Time": "Error" ,"Date": "Error", "Event": "Error"}];
+        var col = [];
+        for (var i = 0; i < data.length; i++) {
+            for (var key in data[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+        // Add json tracking data to the table as rows.
+        table.deleteRow(-1);
+        for (var i = 0; i < data.length; i++) {
+            tr = table.insertRow(-1);
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = data[i][col[j]];
+                tabCell.style.textAlign = "center"; 
+            }
+        }
+      		// Log error, default value was already set to represent this.
+      		console.log("Error with API call, returning 'Error' for all fields");
+    	});
+
+        
+
 
         // Create table header row using the extracted headers above.
         /*
@@ -127,21 +161,12 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
         }
         */
 
-        // Add json tracking data to the table as rows.
-        table.deleteRow(-1);
-        for (var i = 0; i < trackingData.length; i++) {
-            tr = table.insertRow(-1);
-            for (var j = 0; j < col.length; j++) {
-                var tabCell = tr.insertCell(-1);
-                tabCell.innerHTML = trackingData[i][col[j]];
-                tabCell.style.textAlign = "center" 
-            }
-        }
+        
 
         // Now, add the newly created table with json data, to a container.
-        var divShowData = document.getElementById('showData');
-        divShowData.innerHTML = "";
-        divShowData.appendChild(table);
+        //var divShowData = document.getElementById('showData');
+        //divShowData.innerHTML = "";
+        //divShowData.appendChild(table);
 
     }
 </script>

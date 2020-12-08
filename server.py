@@ -24,6 +24,7 @@ trackingNumtoInfo = redis.Redis(host=redisHost, db=1)
 app = Flask(__name__)
 
 @app.route('/track', methods=['POST'])
+
 def track():
 	r=request
 	val=jsonpickle.decode(r.data)
@@ -56,7 +57,9 @@ def getInfoHomepage():
 	except:
 		response={'error':'cannot load page'}
 	response_pickled=jsonpickle.encode(response)
-	return Response(response=response_pickled, status=200, mimetype="application/json")
+	r=Response(response=response_pickled, status=200, mimetype="application/json")
+	r.headers.add('Access-Control-Allow-Origin', '*')
+	return r
 app.run(host="0.0.0.0", port=5000)
 
 
