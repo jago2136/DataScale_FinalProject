@@ -20,6 +20,13 @@ def getHomepage(host_addr):
 	print("Response is", response)
 	print(json.loads(response.text))
 
+def update(host_addr):
+	headers= {'content-type':'application/json'}
+	url=host_addr+'/update'
+	response=requests.get(url, headers=headers)
+	print("Response is", response)
+	print(json.loads(response.text))
+
 host=sys.argv[1]
 addr="http://"+host+":5000"
 command=sys.argv[2]
@@ -29,5 +36,7 @@ if command=='track':
 	putTrackInfo(addr,tracking_num)
 elif command=='getInfo':
 	getHomepage(addr)
+elif command=='update':
+	update(addr)
 else:
 	print("Command not recognized")
