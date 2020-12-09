@@ -6,37 +6,128 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
   <head>
     <title>Platinum Wireless Tracking Dashboard</title>
   </head>
-  <body>
+  <body style="background-color:#f0f0f0;">
 
-    <p> Need to add javascript here to integrate app functionality! </p>
+    <div class="header">
+  <h1>Platinum Wireless Tracking Dashboard</h1>
+  <p>This table is auto-populated from the existing tracking in the database.
+        USPS limits the number of calls that can be made using a specific tracking number. After a number has 
+        been called 35 times, the API will no longer return tracking info. Please only update from USPS when you believe
+        tracking is not up to date!
+  </p>
+  <p>
+    If the tracking you are looking for is not in the table below, it is not yet in the database.
+    Please enter it using 'Fetch Tracking Info'. 
+  </p>
+  </div>
 
-    <body>
-		<h3>
-	    	USPS limits the number of calls that can be made using a specific tracking number. After a number has 
-	    	been called 35 times, the API will no longer return tracking info. Please populate using the database
-	    	unless you need the latest tracking updates.
-	    </h3>
+    <style> 
+      .header {
+        padding: 60px;
+        text-align: center;
+        background: #dddddd;
+        color: #484848;
+        font-size: 20px;
+      }
 
-	    <!-- Grab table info from the database -->
-	    <input type='button' onclick='tableFromDatabase()' 
-	    	value='Populate Table From Database' />
+    table {
+      border:1px solid black;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-	    <br>
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
 
-	    <!-- Grab table info from USPS API -->
-	    <input type='button' onclick='tableFromUSPS()' 
-	    	value='Populate Table From USPS API' />
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
 
-	    <br> 
+    .button {
+      display: inline-block;
+      border-radius: 4px;
+      background-color: #dddddd;
+      border: none;
+      color: #484848;
+      text-align: center;
+      font-size: 20px;
+      padding: 1%;
+      width: 15%;
+      transition: all 0.5s;
+      cursor: pointer;
+      margin: 2%;
+    }
 
-	    <!-- Search an individual tracking number -->
-	    <button id="submitter" onclick='fetchViaTracking()'>Fetch Tracking Info</button>
-	    <input type="text" id="userInputTracking" placeholder="Tracking #"></input>
-	    
-	        
-	        
-	   
-	</body>
+    .button span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+
+    .button span:after {
+      content: '\00bb';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+
+    .button:hover span {
+      padding-right: 25px;
+    }
+
+    .button:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+    .flex-parent {
+      display: flex;
+    }
+
+    .jc-center {
+      justify-content: center;
+    }
+
+    .userInput {
+      display: inline-block;
+      border-radius: 4px;
+      background-color: #dddddd;
+      border: none;
+      color: #484848;
+      text-align: center;
+      font-size: 20px;
+      padding: 1%;
+      width: 15%;
+      height:5%;
+      transition: all 0.5s;
+      cursor: pointer;
+      margin: 2%;
+    }
+  </style>
+
+  <!-- Grab table info from USPS API -->
+    <div class="flex-parent jc-center">
+      <button class="button" onclick='tableFromUSPS()' style="vertical-align:middle"><span>Populate Table From USPS API</span></button>
+
+      <br> 
+
+      <!-- Search an individual tracking number -->
+      <button class="button" id="submitter" onclick='fetchViaTracking()' style="vertical-align:middle"><span>Fetch Tracking Info</span></button>
+      <input style="text-align:middle" type="text" id="userInputTracking" placeholder="Tracking #", size="22", maxlength="22"></input>
+    </div>
+
+    <script> 
+      document.getElementById('userInputTracking').style.height="2%";
+      document.getElementById('userInputTracking').style.fontSize="12pt";
+    </script>
 
 <!-- This is how an individual object would be called and return
 	<script type="text/javascript">
@@ -52,17 +143,17 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
       		console.log(data);
     	}).catch(err => {
       		// Do something for an error here
-      		document.getElementById('number').innerHTML = "Error";
-      		document.getElementById('time').innerHTML = "Error";
-      		document.getElementById('date').innerHTML = "Error";
-      		document.getElementById('event').innerHTML = "Error";
+      		document.getElementById('number').innerHTML = "--";
+      		document.getElementById('time').innerHTML = "--";
+      		document.getElementById('date').innerHTML = "--";
+      		document.getElementById('event').innerHTML = "--";
       		console.log("Error with API call, returning 'Error' for all fields");
     	});
 	</script>
 -->
 	
-
-	    <table cellpadding="0" cellspacing="0" style="width:80%" id="trackingTable">
+  <!-- Create tablr and fill headers -->
+	    <table cellpadding="0" cellspacing="0" style="width:80%" id="trackingTable" style="border:1px solid black;">
         <colgroup>
             <col class="FirstColumn">
         </colgroup>
@@ -79,39 +170,25 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
                 <th>Event</th>
             </tr>
         </tbody>
-        <tbody>
-            <tr>
-                <td style="text-align:center">123456357349256342756 (Sample)</td>
-                <td style="text-align:center">12:37:08 (Sample)</td>
-                <td style="text-align:center">12/02/2020 (Sample)</td>
-                <td style="text-align:center">Out for Delivery (Sample)</td>
-            </tr>
-        <!--   This is how the insert would be done for an individual call
-            <tr>
-                <td style="text-align:center" id="number"></td>
-                <td style="text-align:center" id="time"></td>
-                <td style="text-align:center" id="date"></td>
-                <td style="text-align:center" id="event"></td>
-            </tr>
-        -->
-        </tbody>
     </table>
+
+      <!-- Grab table info from the database -->
+    <body onload="tableFromDatabase();"></body>
 
 <script>
 
     function tableFromDatabase() {
 		
+      // Grab exisiting table element and the titles 
+      var table = document.getElementById('trackingTable');
+      var colNames = ["Tracking Number", "Time", "Date", "Event"];
+      var apiUrl = 'http://localhost:5000/getInfoHomepage';
 
-        // Grab exisiting table element and the titles 
-        var table = document.getElementById('trackingTable');
-        var colNames = ["Tracking Number", "Time", "Date", "Event"];
-        var apiUrl = 'http://localhost:5000/getInfoHomepage';
-
-        // Delete all info in current table
-        var rowCount = table.rows.length;
-        for (var i = 3; i < rowCount; i++) {
+      // Delete all info in current table
+      var rowCount = table.rows.length;
+      for (var i = 2; i < rowCount; i++) {
     		table.deleteRow(-1);
-		}
+		  }
 
         // API Call
     	fetch(apiUrl).then(response => {
@@ -130,7 +207,6 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
             }
         }
         // Add json tracking data to the table as rows.
-        table.deleteRow(-1);
         for (var i = 0; i < info.length; i++) {
             tr = table.insertRow(-1);
             for (var j = 0; j < col.length; j++) {
@@ -143,7 +219,7 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
 
       	// Catch error response and format JSON accordingly
     	}).catch(err => {
-         var data = [{ "Tracking Number": "Error", "Time": "Error" ,"Date": "Error", "Event": "Error"}];
+         var data = [{ "Tracking Number": "--", "Time": "--" ,"Date": "--", "Event": "--"}, { "Tracking Number": "--", "Time": "--" ,"Date": "--", "Event": "--"}, { "Tracking Number": "--", "Time": "--" ,"Date": "--", "Event": "--"}, { "Tracking Number": "--", "Time": "--" ,"Date": "--", "Event": "--"}, { "Tracking Number": "--", "Time": "--" ,"Date": "--", "Event": "--"}];
         var col = [];
         for (var i = 0; i < data.length; i++) {
             for (var key in data[i]) {
@@ -153,7 +229,6 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
             }
         }
         // Add json tracking data to the table as rows.
-        table.deleteRow(-1);
         for (var i = 0; i < data.length; i++) {
             tr = table.insertRow(-1);
             for (var j = 0; j < col.length; j++) {

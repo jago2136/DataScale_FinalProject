@@ -79,7 +79,7 @@ def serv_match(trackingNumber):
 def callback(ch, method, properties, body):
 	serverMessage=jsonpickle.decode(body)
 	print("Received message: ", serverMessage)
-	tracking_str=serverMessage['tracking_num']
+	tracking_str=str(serverMessage['tracking_num'])
 	if (tracking_str!="none"):
 		response=serv_match(tracking_str)
 		trackingNumtoInfo.set(tracking_str,response)

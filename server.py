@@ -33,7 +33,7 @@ def track(tracking_number):
 	try:
 		#print(val['data'])
 		response={'state':"sending to worker node"}
-		responsetoRab={'tracking_num': tracking_number}
+		responsetoRab={'tracking_num': str(tracking_number)}
 	except:
 		response={'state':"error sending to worker node"}
 		responsetoRab= {'tracking_num':"none"}
@@ -68,7 +68,7 @@ def update():
 
 	try:
 		for i in trackingNumtoInfo.keys():
-			responsetoRab={'tracking_num': jsonpickle.decode(i)}
+			responsetoRab={'tracking_num': str(jsonpickle.decode(i))}
 			response_rabbit_pickled=jsonpickle.encode(responsetoRab)
 			channel.basic_publish(exchange='',routing_key='worker_queue', body=response_rabbit_pickled)
 		response={'update':'success'}
