@@ -16,8 +16,24 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
 	    	been called 35 times, the API will no longer return tracking info. Please populate using the database
 	    	unless you need the latest tracking updates.
 	    </h3>
-	    <input type='button' onclick='tableFromJson()' 
+
+	    <!-- Grab table info from the database -->
+	    <input type='button' onclick='tableFromDatabase()' 
 	    	value='Populate Table From Database' />
+
+	    <br>
+
+	    <!-- Grab table info from USPS API -->
+	    <input type='button' onclick='tableFromUSPS()' 
+	    	value='Populate Table From USPS API' />
+
+	    <br> 
+
+	    <!-- Search an individual tracking number -->
+	    <button id="submitter" onclick='fetchViaTracking()'>Fetch Tracking Info</button>
+	    <input type="text" id="userInputTracking" placeholder="Tracking #"></input>
+	    
+	        
 	        
 	   
 	</body>
@@ -52,8 +68,7 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
         </colgroup>
         <thead>
             <tr>
-                <th colspan="2">Order Details</th>
-                <th style="text-align:center" colspan="3">Most Recent Tracking Updates</th>
+                <th style="text-align:center" colspan="4">Most Recent Tracking Updates</th>
             </tr>
         </thead>
         <tbody class="secondHeader">
@@ -84,25 +99,28 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
 
 <script>
 
-    function tableFromJson() {
+    function tableFromDatabase() {
 		
-		// Set default tracking
 
-                // Create table and column names
+        // Grab exisiting table element and the titles 
         var table = document.getElementById('trackingTable');
         var colNames = ["Tracking Number", "Time", "Date", "Event"];
+        var apiUrl = 'http://localhost:5000/getInfoHomepage';
 
-
-
+        // Delete all info in current table
+        var rowCount = table.rows.length;
+        for (var i = 3; i < rowCount; i++) {
+    		table.deleteRow(-1);
+		}
 
         // API Call
-        var apiUrl = 'http://localhost:5000/getInfoHomepage';
     	fetch(apiUrl).then(response => {
       		return response.json();
+
+      	// Successful return
     	}).then(data => {
-      		// Assign JSON response here.
-      		// Extract keys from incoming data 
-        var info=JSON.parse(data);
+      	// Parse data and insert rows in the table 
+        var info = JSON.parse(data);
         var col = [];
         for (var i = 0; i < info.length; i++) {
             for (var key in info[i]) {
@@ -121,8 +139,9 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
                 tabCell.style.textAlign = "center"; 
             }
         }
+      	console.log(data);
 
-      		console.log(data);
+      	// Catch error response and format JSON accordingly
     	}).catch(err => {
          var data = [{ "Tracking Number": "Error", "Time": "Error" ,"Date": "Error", "Event": "Error"}];
         var col = [];
@@ -143,33 +162,83 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
                 tabCell.style.textAlign = "center"; 
             }
         }
-      		// Log error, default value was already set to represent this.
-      		console.log("Error with API call, returning 'Error' for all fields");
+      	// Log error, default value was already set to represent this.
+      	console.log("Error with API call, returning 'Error' for all fields");
     	});
 
-        
+    }
 
+    function tableFromUSPS() {
 
-        // Create table header row using the extracted headers above.
-        /*
-        var tr = table.insertRow(-1);                   
+    	var table = document.getElementById('trackingTable');
+    	var colNames = ["Tracking Number", "Time", "Date", "Event"];
+		var apiUrl = 'http://localhost:5000/update';
+		
+		// API Call
+    	fetch(apiUrl).then(response => {
+      		return response.json();
+    	}).then(data => {
+    		// Successful return
+      		console.log(data);
+    	}).catch(err => {
+	      	// Log error, default value was already set to represent this.
+	      	console.log("Error with API call, returning 'Error' for all fields");
+    	});
 
-        for (var i = 0; i < col.length; i++) {
-            var th = document.createElement("th");      
-            th.innerHTML = colNames[i];
-            tr.appendChild(th);
-        }
-        */
+    	tableFromDatabase();
 
-        
+    }
 
-        // Now, add the newly created table with json data, to a container.
-        //var divShowData = document.getElementById('showData');
-        //divShowData.innerHTML = "";
-        //divShowData.appendChild(table);
+    function fetchViaTracking() {
+    	
+    	var trackingNumber = document.getElementById("userInputTracking").value;
+    	var apiUrl = 'http://localhost:5000/track';
+
+    	// POST body data 
+		var tNum = {
+		    "number" : trackingNumber
+		};
+
+		// request options
+		var json = {
+		    method: 'POST',
+		    data: JSON.stringify(tNum),
+		    headers: {
+		        'Content-Type': 'application/json'
+		    }
+		}
+
+		fetch(apiUrl, json).then(response => {
+      		return response.json();
+
+      	// Successful return
+    	}).then(data => {
+
+      		console.log(data);
+      	// Catch error response and format JSON accordingly
+    	}).catch(err => {
+	      	// Log error, default value was already set to represent this.
+	      	console.log("Error with API call, returning 'Error' for all fields");
+    	});
+
+    	tableFromDatabase();
 
     }
 </script>
 
   </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
