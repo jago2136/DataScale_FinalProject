@@ -192,23 +192,10 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
     function fetchViaTracking() {
     	
     	var trackingNumber = document.getElementById("userInputTracking").value;
-    	var apiUrl = 'http://localhost:5000/track';
+    	var url = 'http://localhost:5000/track/';
+    	var apiUrl = trackingNumber.concat(url);
 
-    	// POST body data 
-		var tNum = {
-		    "number" : trackingNumber
-		};
-
-		// request options
-		var json = {
-		    method: 'POST',
-		    data: JSON.stringify(tNum),
-		    headers: {
-		        'Content-Type': 'application/json'
-		    }
-		}
-
-		fetch(apiUrl, json).then(response => {
+		fetch(apiUrl).then(response => {
       		return response.json();
 
       	// Successful return
