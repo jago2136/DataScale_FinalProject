@@ -42,8 +42,8 @@ def track(tracking_number):
 	response_rabbit_pickled=jsonpickle.encode(responsetoRab)
 
 	channel.basic_publish(exchange='',routing_key='worker_queue', body=response_rabbit_pickled)
-	res=Response(response=response_pickled, status=200, mimetype="application/json")
-	return res
+	return Response(response=response_pickled, status=200, mimetype="application/json")
+
 
 @app.route('/getInfoHomepage', methods=['GET'])
 def getInfoHomepage():
@@ -53,6 +53,7 @@ def getInfoHomepage():
 		for i in trackingNumtoInfo.keys():
 			val=trackingNumtoInfo.get(i)
 			if val:
+				print(val)
 				response_temp.append(jsonpickle.decode(val))
 		response=json.dumps(response_temp)
 		print("Response for getInfo is", response)
