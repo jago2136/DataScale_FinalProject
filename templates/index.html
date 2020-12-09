@@ -163,7 +163,7 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
             }
         }
       	// Log error, default value was already set to represent this.
-      	console.log("Error with API call, returning 'Error' for all fields");
+      	console.log("Error with API call, returning 'Error' for all fields, creating table");
     	});
 
     }
@@ -182,10 +182,11 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
       		console.log(data);
     	}).catch(err => {
 	      	// Log error, default value was already set to represent this.
-	      	console.log("Error with API call, returning 'Error' for all fields");
+	      	console.log("Error with API call, returning 'Error' for all fields, tablefrom USPS");
     	});
 
-    	tableFromDatabase();
+      setTimeout(function(){ tableFromDatabase();}, 10000);
+    	//tableFromDatabase();
 
     }
 
@@ -193,7 +194,7 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
     	
     	var trackingNumber = document.getElementById("userInputTracking").value;
     	var url = 'http://localhost:5000/track/';
-    	var apiUrl = trackingNumber.concat(url);
+    	var apiUrl = url.concat(trackingNumber);
 
 		fetch(apiUrl).then(response => {
       		return response.json();
@@ -205,10 +206,11 @@ Citation: https://www.encodedna.com/javascript/populate-json-data-to-html-table-
       	// Catch error response and format JSON accordingly
     	}).catch(err => {
 	      	// Log error, default value was already set to represent this.
-	      	console.log("Error with API call, returning 'Error' for all fields");
+	      	console.log("Error with API call, returning 'Error' for all fields, fetch");
     	});
 
-    	tableFromDatabase();
+      setTimeout(function(){ tableFromDatabase();}, 5000);
+    	//tableFromDatabase();
 
     }
 </script>
