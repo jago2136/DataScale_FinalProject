@@ -24,7 +24,6 @@ trackingNumtoInfo = redis.Redis(host=redisHost, db=1)
 app = Flask(__name__)
 
 @app.route('/track', methods=['POST'])
-
 def track():
 	r=request
 	val=jsonpickle.decode(r.data)
@@ -40,8 +39,9 @@ def track():
 	response_rabbit_pickled=jsonpickle.encode(responsetoRab)
 
 	channel.basic_publish(exchange='',routing_key='worker_queue', body=response_rabbit_pickled)
-
-	return Response(response=response_pickled, status=200, mimetype="application/json")
+	r=Response(response=response_pickled, status=200, mimetype="application/json")
+	r.headers.add('Access-Control-Allow-Origin', '*')
+	return r
 
 @app.route('/getInfoHomepage', methods=['GET'])
 def getInfoHomepage():
@@ -60,6 +60,25 @@ def getInfoHomepage():
 	r=Response(response=response_pickled, status=200, mimetype="application/json")
 	r.headers.add('Access-Control-Allow-Origin', '*')
 	return r
+
+@app.route('/update', methods=['GET'])
+def update():
+	r=request
+	try:
+		for i in trackingNumtoInfo.keys():
+			responsetoRab={'tracking_num': i}
+			response_rabbit_pickled=jsonpickle.encode(responsetoRab)
+			channel.basic_publish(exchange='',routing_key='worker_queue', body=response_rabbit_pickled)
+			print("Updating",i,"-sent to worker node.")
+		response={'update':'success'}
+	except:
+		response={'update':'fail'}
+
+	response_pickled=jsonpickle.encode(response)
+	r=Response(response=response_pickled, status=200, mimetype="application/json")
+	r.headers.add('Access-Control-Allow-Origin', '*')
+	return r
+	
 app.run(host="0.0.0.0", port=5000)
 
 
