@@ -42,7 +42,7 @@ def getTrackingInfo(order, number):
 	# Grab data for an order via the tracking number
 	# NOTE: A tracking number can only be called 35 times before exhausting the resource
 	try:
-		trackingInfo = usps.track(number)
+		trackingInfo = usps.track(str(number))
 
 		# Grab data for most recent update
 		order.trackingTime = trackingInfo.result['TrackResponse']['TrackInfo']['TrackDetail'][0]['EventTime']

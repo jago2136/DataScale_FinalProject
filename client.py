@@ -7,9 +7,8 @@ import jsonpickle
 
 def putTrackInfo(host_addr, tracknum):
 	headers= {'content-type':'application/json'}
-	url=host_addr+'/track'
-	number=jsonpickle.encode({"number":tracknum})
-	response=requests.post(url, data=number, headers=headers)
+	url=host_addr+'/track/'+tracknum
+	response=requests.get(url, headers=headers)
 	print("Response is", response)
 	print(json.loads(response.text))
 
