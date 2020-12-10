@@ -29,7 +29,7 @@ CORS(app)
 def track(tracking_number):
 	r=request
 	#debug case
-	if (tracking_number=="123"):
+	if (str(tracking_number)=="123"):
 		response_debug={'server':'success'}
 		response_pickled=jsonpickle.encode(response_debug)
 		return Response(response=response_pickled, status=200, mimetype="application/json")
