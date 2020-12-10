@@ -28,7 +28,11 @@ CORS(app)
 @app.route('/track/<tracking_number>', methods=['GET'])
 def track(tracking_number):
 	r=request
-
+	#debug case
+	if (tracking_number=="123"):
+		response_debug={'server':'success'}
+		response_pickled=jsonpickle.encode(response_debug)
+		return Response(response=response_pickled, status=200, mimetype="application/json")
 	## in this part parse request and send it to a worker node
 	try:
 		#print(val['data'])
